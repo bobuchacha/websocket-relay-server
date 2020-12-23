@@ -46,6 +46,7 @@ namespace OrchidRelayServer.Classes
             WSSServer.Log.Level = LogLevel.Warn;
 
             WSSServer.AddWebSocketService<WebSocketServerControllers.RestaurantManagerService>("/rms");                       // default, legacy module
+            WSSServer.AddWebSocketService<WebSocketServerControllers.UtilityService>("/utility");                       // default, legacy module
             WSSServer.KeepClean = false;
         }
 
@@ -70,7 +71,7 @@ namespace OrchidRelayServer.Classes
                 Debug.Write(e);
             }
 
-            if (!WSSServer.IsListening) TrayIcon.NotifyUser("Server stopped", "Websocket server has been starting and listening to port " + Config.WebsocketServerPort);
+            if (!WSSServer.IsListening) TrayIcon.NotifyUser("Server stopped", "Websocket server has been stopped");
 
         }
 

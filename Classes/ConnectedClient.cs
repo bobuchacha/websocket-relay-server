@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.IO;
+using System.Diagnostics;
 
 namespace OrchidRelayServer.Classes
 {
@@ -16,13 +20,36 @@ namespace OrchidRelayServer.Classes
         public bool IsController { get; set; }
         public bool IsConnected { get; set; }
         public DateTime ConnectedAt { get; set; }
-        public WebSocketSharp.WebSocket ws;
+        
+        public string SessionID { get; set; }
+
+        private bool _addedToTable;
+        private WebSocketSharp.WebSocket _ws;
 
         public ConnectedClient()
         {
             ConnectedAt = DateTime.Now;
         }
 
+        public WebSocketSharp.WebSocket WebSocketInstance()
+        {
+            return _ws;
+        }
+        public void WebSocketInstance(WebSocketSharp.WebSocket ws)
+        {
+            _ws = ws;
+        }
+
+        public bool isAdded()
+        {
+            return _addedToTable;
+        }
+
+        public void isAdded(bool set)
+        {
+            _addedToTable = set;
+        }
+        
         /// <summary>
         /// create a new ConnectedClient from json
         /// </summary>
@@ -30,9 +57,12 @@ namespace OrchidRelayServer.Classes
         /// <returns></returns>
         public static ConnectedClient CreateFromJSON(string json)
         {
-            ConnectedClient newClient = JsonSerializer.Deserialize<ConnectedClient>(json);
+            JsonSerializer serializer = new JsonSerializer();
+            JObject o = JObject.Parse(json);
+            ConnectedClient newClient = (ConnectedClient)serializer.Deserialize(new JTokenReader(o), typeof(ConnectedClient));
 
             return newClient;
+
         }
     }
 }

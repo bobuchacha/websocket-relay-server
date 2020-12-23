@@ -21,8 +21,9 @@ namespace OrchidRelayServer.Forms
 
         private void frmConnectedClients_Load(object sender, EventArgs e)
         {
-            gridMain.DataSource = ConnectedClients.GetDataTable();
             gridMain.EditMode = DataGridViewEditMode.EditProgrammatically;
+            gridMain.DataSource = ConnectedClients.GetDataTable();
+            refreshTimer.Start();
         }
 
         private void gridMain_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -32,8 +33,12 @@ namespace OrchidRelayServer.Forms
 
         ~frmConnectedClients()
         {
+            refreshTimer.Stop();
+        }
 
-            Debug.Write("AS");
+        private void refreshTimer_Tick(object sender, EventArgs e)
+        {
+            ConnectedClients.GetDataTable();    // update DataTable bound to the grid view
         }
     }
 }

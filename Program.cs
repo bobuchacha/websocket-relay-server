@@ -88,12 +88,11 @@ namespace OrchidRelayServer
             // start the web server
             if (Config.WebsocketServerPort != null) ServerController.Start();
 
-
             // install tray icon
             InitializeTrayIconEvents();
             TrayIcon.InitializeTrayIcon();
 
-            Application.SetCompatibleTextRenderingDefault(false);
+            
             
         }
 

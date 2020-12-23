@@ -28,7 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.gridMain = new System.Windows.Forms.DataGridView();
+            this.refreshTimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.gridMain)).BeginInit();
             this.SuspendLayout();
             // 
@@ -47,6 +49,11 @@
             this.gridMain.Size = new System.Drawing.Size(917, 596);
             this.gridMain.TabIndex = 0;
             this.gridMain.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridMain_CellContentClick);
+            // 
+            // refreshTimer
+            // 
+            this.refreshTimer.Interval = 1000;
+            this.refreshTimer.Tick += new System.EventHandler(this.refreshTimer_Tick);
             // 
             // frmConnectedClients
             // 
@@ -67,5 +74,6 @@
         #endregion
 
         private System.Windows.Forms.DataGridView gridMain;
+        private System.Windows.Forms.Timer refreshTimer;
     }
 }
