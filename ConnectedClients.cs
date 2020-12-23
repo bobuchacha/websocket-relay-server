@@ -15,7 +15,7 @@ namespace OrchidRelayServer
     class ConnectedClients
     {
         private static List<ConnectedClient> _clients = new List<ConnectedClient> { };
-        private static string[] ColumnNames = {"IP Address", "Device UUID", "Account ID", "Access Token", "Application Name", "Controller", "Alive", "Connected At"};
+        private static string[] ColumnNames = {"IP Address", "Device UUID", "Account ID", "Access Token", "Application Name", "Controller", "Alive", "Connected At", "Development Device"};
         private static DataTable dt;
 
         public static void Add(ConnectedClient client)
@@ -43,6 +43,19 @@ namespace OrchidRelayServer
             }
             return result;
         }
+        public static List<ConnectedClient> AllDevByAccountId(string accountId)
+        {
+            List<ConnectedClient> result = new List<ConnectedClient> { };
+            foreach (ConnectedClient client in _clients)
+            {
+                if (client.AccountID == accountId && client.IsDevelopment == true)
+                {
+                    result.Add(client);
+                }
+            }
+            return result;
+        }
+
 
         public static ConnectedClient FindByDeviceUUID(string deviceId)
         {
@@ -68,6 +81,7 @@ namespace OrchidRelayServer
                 dt.Columns.Add(ColumnNames[4], typeof(string));
                 dt.Columns.Add(ColumnNames[5], typeof(bool));
                 dt.Columns.Add(ColumnNames[6], typeof(bool));
+                dt.Columns.Add(ColumnNames[8], typeof(bool));       // development
                 dt.Columns.Add(ColumnNames[7], typeof(DateTime));
             }
 
@@ -77,7 +91,7 @@ namespace OrchidRelayServer
             {
                 //if (client.isAdded()) continue;
                 //client.isAdded(true);
-
+                
                 DataRow row = dt.NewRow();
                 row[ColumnNames[0]] = client.IPAddress;
                 row[ColumnNames[1]] = client.DeviceUUID;
@@ -85,7 +99,8 @@ namespace OrchidRelayServer
                 row[ColumnNames[3]] = client.AccessToken;
                 row[ColumnNames[4]] = client.ApplicationName;
                 row[ColumnNames[5]] = client.IsController;
-                row[ColumnNames[6]] = client.WebSocketInstance().IsAlive;                
+                row[ColumnNames[7]] = client.ConnectedAt;
+                row[ColumnNames[8]] = client.IsDevelopment;
                 row[ColumnNames[7]] = client.ConnectedAt;
                 dt.Rows.Add(row);
             }

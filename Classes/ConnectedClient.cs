@@ -19,6 +19,7 @@ namespace OrchidRelayServer.Classes
         public string ApplicationName { get; set; }
         public bool IsController { get; set; }
         public bool IsConnected { get; set; }
+        public bool IsDevelopment { get; set; }
         public DateTime ConnectedAt { get; set; }
         
         public string SessionID { get; set; }

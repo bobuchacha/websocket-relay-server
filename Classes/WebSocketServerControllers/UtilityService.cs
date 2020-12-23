@@ -44,6 +44,8 @@ namespace OrchidRelayServer.Classes.WebSocketServerControllers
         {
             try
             {
+                string JSON;
+
                 JsonSerializer serializer = new JsonSerializer();
                 JObject o = JObject.Parse(e.Data);
                 JToken command = o.GetValue("command");
@@ -55,7 +57,13 @@ namespace OrchidRelayServer.Classes.WebSocketServerControllers
                 {
                     case "getConnectedDevices":
                     case "get-connected-devices":
-                        string JSON = JsonConvert.SerializeObject(ConnectedClients.AllByAccountId(param.ToString()));
+                        JSON = JsonConvert.SerializeObject(ConnectedClients.AllByAccountId(param.ToString()));
+                        Success(JSON);
+                        break;
+
+                    case "getConnectedDevDevices":
+                    case "get-connected-dev-devices":
+                        JSON = JsonConvert.SerializeObject(ConnectedClients.AllDevByAccountId(param.ToString()));
                         Success(JSON);
                         break;
 
