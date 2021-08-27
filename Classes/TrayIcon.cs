@@ -31,7 +31,6 @@ namespace OrchidRelayServer.Classes
             //contextMenu = new ContextMenuStrip();
 
 
-
             // set icon properties
             notifyIcon.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
             notifyIcon.Visible = true;

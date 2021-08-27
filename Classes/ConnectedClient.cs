@@ -15,6 +15,7 @@ namespace OrchidRelayServer.Classes
         public string IPAddress {get; set;}
         public string DeviceUUID { get; set; }
         public string AccountID { get; set; }
+        public string LocationID { get; set; }
         public string AccessToken { get; set; }
         public string ApplicationName { get; set; }
         public bool IsController { get; set; }
