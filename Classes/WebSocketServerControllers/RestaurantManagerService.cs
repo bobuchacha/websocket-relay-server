@@ -43,6 +43,8 @@ namespace OrchidRelayServer.Classes.WebSocketServerControllers
         {
             try
             {
+                // check if a ConnectedClient with DeviceUUID is registered. This probably get doubled if connection get fatal
+   
                 if (json[0] != '{') throw (new Exception("Register Information doesn't seem to be JSON format."));
 
                 // deserialize json
@@ -64,6 +66,19 @@ namespace OrchidRelayServer.Classes.WebSocketServerControllers
                 clientInfo.WebSocketInstance(Context.WebSocket);
 
                 _clientInfo = clientInfo;
+
+                // before adding instance to cache, we need to find if there is any existing instance with same
+                // deviceUUID in memory. This is because server sometimes get fatal
+                // and server does not close client correctly.
+                ConnectedClient duplicatedClient = ConnectedClients.FindByDeviceUUID(clientInfo.DeviceUUID);
+
+                if (duplicatedClient != null)
+                {
+                    duplicatedClient.WebSocketInstance().Close();
+                    ConnectedClients.Remove(duplicatedClient);
+                }
+
+                // add instance to cache memory
                 ConnectedClients.Add(_clientInfo);
 
                 // send response to client
@@ -111,6 +126,10 @@ namespace OrchidRelayServer.Classes.WebSocketServerControllers
         #region Events
         protected override void OnOpen()
         {
+            Context.WebSocket.EmitOnPing = true;
+
+            SetInterval(() => Context.WebSocket.Ping(), TimeSpan.FromSeconds(30));
+
             Context.WebSocket.Send("Welcome to Restaurant Manager Remote Management Service vesion " + Program.AppVersion);
             Debug.WriteLine("New Client connected. Session ID: " + ID);
         }
@@ -123,6 +142,12 @@ namespace OrchidRelayServer.Classes.WebSocketServerControllers
 
         protected override void OnMessage(MessageEventArgs e)
         {
+            if (e.IsPing)
+            {
+                Context.WebSocket.Send(e.Data);
+                return;
+            }
+
             if (!_isRegistered)
             {
                 Debug.WriteLine("Received message. Client not registered. Registering now");
@@ -137,5 +162,14 @@ namespace OrchidRelayServer.Classes.WebSocketServerControllers
 
         #endregion
 
+
+        public static async Task SetInterval(Action action, TimeSpan timeout)
+        {
+            await Task.Delay(timeout).ConfigureAwait(false);
+
+            action();
+
+            SetInterval(action, timeout);
+        }
     }
 }

@@ -55,7 +55,7 @@ namespace OrchidRelayServer.Classes
 
             // merging to v2 - new interface
             httpServer = new HttpServer(IPAddress.Any, Convert.ToInt16(Config.WebsocketServerPort));
-            httpServer.AddWebSocketService<WebSocketServerControllers.RestaurantManagerService>("/rms");           // compatibility to legacy standalone print server
+            httpServer.AddWebSocketService<WebSocketServerControllers.RestaurantManagerService>("/rms");            // compatibility to legacy standalone print server
             httpServer.AddWebSocketService<WebSocketServerControllers.UtilityService>("/utility");                  // backward compatibility websocket utility server
 
             httpServer.Log.File = "log.txt";
